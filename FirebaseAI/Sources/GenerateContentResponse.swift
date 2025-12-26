@@ -51,6 +51,9 @@ public struct GenerateContentResponse: Sendable {
     /// The breakdown, by modality, of how many tokens were consumed by the tools used to process
     /// the request.
     public let toolUsePromptTokensDetails: [ModalityTokenCount]
+
+    /// Count of cached input tokens
+    public let cachedContentTokenCount: Int?
   }
 
   /// A list of candidate response content, ordered from best to worst.
@@ -488,6 +491,7 @@ extension GenerateContentResponse.UsageMetadata: Decodable {
     case promptTokensDetails
     case candidatesTokensDetails
     case toolUsePromptTokensDetails
+    case cachedContentTokenCount
   }
 
   public init(from decoder: any Decoder) throws {
@@ -508,6 +512,8 @@ extension GenerateContentResponse.UsageMetadata: Decodable {
     toolUsePromptTokensDetails = try container.decodeIfPresent(
       [ModalityTokenCount].self, forKey: .toolUsePromptTokensDetails
     ) ?? []
+    cachedContentTokenCount = try container
+      .decodeIfPresent(Int.self, forKey: .cachedContentTokenCount)
   }
 }
 
